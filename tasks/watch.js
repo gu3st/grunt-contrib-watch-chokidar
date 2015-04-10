@@ -7,7 +7,7 @@
  */
 
 var path = require('path');
-var Gaze = require('gaze').Gaze;
+var chokidar = require('chokidar');
 var _ = require('lodash');
 var waiting = 'Waiting...';
 var changedFiles = Object.create(null);
@@ -106,76 +106,58 @@ module.exports = function(grunt) {
       }
 
       // Create watcher per target
-      watchers.push(new Gaze(patterns, target.options, function(err) {
-        if (err) {
-          if (typeof err === 'string') { err = new Error(err); }
-          grunt.log.writeln('ERROR'.red);
-          grunt.fatal(err);
-          return taskrun.done();
+      var watcher = chokidar.watch(patterns, {ignoreInitial: true});
+      watchers.push(watcher);
+      watcher.on('all', function(status, filepath) {
+
+        // Skip events not specified
+        if (!_.contains(target.options.event, 'all') &&
+            !_.contains(target.options.event, status)) {
+          return;
         }
 
-        // Log all watched files with --verbose set
-        if (grunt.option('verbose')) {
-          var watched = this.watched();
-          Object.keys(watched).forEach(function(watchedDir) {
-            watched[watchedDir].forEach(function(watchedFile) {
-              grunt.log.writeln('Watching ' + path.relative(process.cwd(), watchedFile) + ' for changes.');
-            });
-          });
+        filepath = path.relative(eventCwd, filepath);
+
+        // Skip empty filepaths
+        if (filepath === '') {
+          return;
         }
 
-        // On changed/added/deleted
-        this.on('all', function(status, filepath) {
+        // If Gruntfile.js changed, reload self task
+        if (target.options.reload || /gruntfile\.(js|coffee)/i.test(filepath)) {
+          taskrun.reload = true;
+        }
 
-          // Skip events not specified
-          if (!_.contains(target.options.event, 'all') &&
-              !_.contains(target.options.event, status)) {
-            return;
+        // Emit watch events if anyone is listening
+        if (grunt.event.listeners('watch').length > 0) {
+          grunt.event.emit('watch', status, filepath, target.name);
+        }
+
+        // Group changed files only for display
+        changedFiles[filepath] = status;
+
+        // Add changed files to the target
+        if (taskrun.targets[target.name]) {
+          if (!taskrun.targets[target.name].changedFiles) {
+            taskrun.targets[target.name].changedFiles = Object.create(null);
           }
+          taskrun.targets[target.name].changedFiles[filepath] = status;
+        }
 
-          filepath = path.relative(eventCwd, filepath);
+        // Queue the target
+        if (taskrun.queue.indexOf(target.name) === -1) {
+          taskrun.queue.push(target.name);
+        }
 
-          // Skip empty filepaths
-          if (filepath === '') {
-            return;
-          }
+        // Run the tasks
+        taskrun.run();
+      });
 
-          // If Gruntfile.js changed, reload self task
-          if (target.options.reload || /gruntfile\.(js|coffee)/i.test(filepath)) {
-            taskrun.reload = true;
-          }
-
-          // Emit watch events if anyone is listening
-          if (grunt.event.listeners('watch').length > 0) {
-            grunt.event.emit('watch', status, filepath, target.name);
-          }
-
-          // Group changed files only for display
-          changedFiles[filepath] = status;
-
-          // Add changed files to the target
-          if (taskrun.targets[target.name]) {
-            if (!taskrun.targets[target.name].changedFiles) {
-              taskrun.targets[target.name].changedFiles = Object.create(null);
-            }
-            taskrun.targets[target.name].changedFiles[filepath] = status;
-          }
-
-          // Queue the target
-          if (taskrun.queue.indexOf(target.name) === -1) {
-            taskrun.queue.push(target.name);
-          }
-
-          // Run the tasks
-          taskrun.run();
-        });
-
-        // On watcher error
-        this.on('error', function(err) {
-          if (typeof err === 'string') { err = new Error(err); }
-          grunt.log.error(err.message);
-        });
-      }));
+      // On watcher error
+      watcher.on('error', function(err) {
+        if (typeof err === 'string') { err = new Error(err); }
+        grunt.log.error(err.message);
+      });
     });
 
   });
