@@ -1,7 +1,7 @@
 {
   "name": "grunt-contrib-watch-chokidar",
   "description": "Run predefined tasks whenever watched file patterns are added, changed or deleted",
-  "version": "0.6.1.1",
+  "version": "0.6.1-chokidar.1",
   "author": {
     "name": "Andreas Berger",
     "url": "https://github.com/Andy2003/grunt-contrib-watch-chokidar"
