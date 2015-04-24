@@ -3,7 +3,7 @@
 ```js
 // Simple config to run jshint any time a file is added, changed or deleted
 grunt.initConfig({
-  watch: {
+  watchChokidar: {
     files: ['**/*'],
     tasks: ['jshint'],
   },
@@ -13,7 +13,7 @@ grunt.initConfig({
 ```js
 // Advanced config. Run specific tasks when specific files are added, changed or deleted.
 grunt.initConfig({
-  watch: {
+  watchChokidar: {
     gruntfile: {
       files: 'Gruntfile.js',
       tasks: ['jshint:gruntfile'],
@@ -30,30 +30,30 @@ grunt.initConfig({
 });
 ```
 
-## Using the `watch` event
-This task will emit a `watch` event when watched files are modified. This is useful if you would like a simple notification when files are edited or if you're using this task in tandem with another task. Here is a simple example using the `watch` event:
+## Using the `watchChokidar` event
+This task will emit a `watchChokidar` event when watched files are modified. This is useful if you would like a simple notification when files are edited or if you're using this task in tandem with another task. Here is a simple example using the `watchChokidar` event:
 
 ```js
 grunt.initConfig({
-  watch: {
+  watchChokidar: {
     scripts: {
       files: ['lib/*.js'],
     },
   },
 });
-grunt.event.on('watch', function(action, filepath, target) {
+grunt.event.on('watchChokidar', function(action, filepath, target) {
   grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
 });
 ```
 
-**The `watch` event is not intended for replacing the standard Grunt API for configuring and running tasks. If you're trying to run tasks from within the `watch` event you're more than likely doing it wrong. Please read [configuring tasks](http://gruntjs.com/configuring-tasks).**
+**The `watchChokidar` event is not intended for replacing the standard Grunt API for configuring and running tasks. If you're trying to run tasks from within the `watchChokidar` event you're more than likely doing it wrong. Please read [configuring tasks](http://gruntjs.com/configuring-tasks).**
 
 ### Compiling Files As Needed
 A very common request is to only compile files as needed. Here is an example that will only lint changed files with the `jshint` task:
 
 ```js
 grunt.initConfig({
-  watch: {
+  watchChokidar: {
     scripts: {
       files: ['lib/*.js'],
       tasks: ['jshint'],
@@ -70,7 +70,7 @@ grunt.initConfig({
 });
 
 // on watch events configure jshint:all to only run on changed file
-grunt.event.on('watch', function(action, filepath) {
+grunt.event.on('watchChokidar', function(action, filepath) {
   grunt.config('jshint.all.src', filepath);
 });
 ```
@@ -85,7 +85,7 @@ var onChange = grunt.util._.debounce(function() {
   grunt.config('jshint.all.src', Object.keys(changedFiles));
   changedFiles = Object.create(null);
 }, 200);
-grunt.event.on('watch', function(action, filepath) {
+grunt.event.on('watchChokidar', function(action, filepath) {
   changedFiles[filepath] = action;
   onChange();
 });
@@ -98,7 +98,7 @@ The simplest way to add live reloading to all your watch targets is by setting `
 
 ```js
 grunt.initConfig({
-  watch: {
+  watchChokidar: {
     options: {
       livereload: true,
     },
@@ -114,7 +114,7 @@ You can also configure live reload for individual watch targets or run multiple 
 
 ```js
 grunt.initConfig({
-  watch: {
+  watchChokidar: {
     css: {
       files: ['public/scss/*.scss'],
       tasks: ['compass'],
@@ -183,7 +183,7 @@ grunt.initConfig({
       dest: 'dest/css/index.css',
     },
   },
-  watch: {
+  watchChokidar: {
     sass: {
       // We watch and compile sass files as normal but don't live reload here
       files: ['src/sass/*.sass'],
@@ -198,25 +198,3 @@ grunt.initConfig({
   },
 });
 ```
-
-# FAQs
-
-## How do I fix the error `EMFILE: Too many opened files.`?
-This is because of your system's max opened file limit. For OSX the default is very low (256). Temporarily increase your limit with `ulimit -n 10480`, the number being the new max limit.
-
-In some versions of OSX the above solution doesn't work. In that case try `launchctl limit maxfiles 10480 10480 ` and restart your terminal. See [here](http://superuser.com/questions/261023/how-to-change-default-ulimit-values-in-mac-os-x-10-6).
-
-## Can I use this with Grunt v0.3?
-`grunt-contrib-watch@0.1.x` is compatible with Grunt v0.3 but it is highly recommended to upgrade Grunt instead.
-
-## Why is the watch devouring all my memory/cpu?
-Likely because of an enthusiastic pattern trying to watch thousands of files. Such as `'**/*.js'` but forgetting to exclude the `node_modules` folder with `'!**/node_modules/**'`. Try grouping your files within a subfolder or be more explicit with your file matching pattern.
-
-Another reason if you're watching a large number of files could be the low default `interval`. Try increasing with `options: { interval: 5007 }`. Please see issues [#35](https://github.com/gruntjs/grunt-contrib-watch/issues/35) and [#145](https://github.com/gruntjs/grunt-contrib-watch/issues/145) for more information.
-
-## Why spawn as child processes as a default?
-The goal of this watch task is as files are changed, run tasks as if they were triggered by the user themself. Each time a user runs `grunt` a process is spawned and tasks are ran in succession. In an effort to keep the experience consistent and continually produce expected results, this watch task spawns tasks as child processes by default.
-
-Sandboxing task runs also allows this watch task to run more stable over long periods of time. As well as more efficiently with more complex tasks and file structures.
-
-Spawning does cause a performance hit (usually 500ms for most environments). It also cripples tasks that rely on the watch task to share the context with each subsequent run (i.e., reload tasks). If you would like a faster watch task or need to share the context please set the `spawn` option to `false`. Just be aware that with this option enabled, the watch task is more prone to failure.

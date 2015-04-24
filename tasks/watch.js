@@ -56,7 +56,7 @@ module.exports = function(grunt) {
     grunt.log.writeln('').writeln('Reloading watch config...'.cyan);
   });
 
-  grunt.registerTask('watch', 'Run predefined tasks whenever watched files change.', function(target) {
+  grunt.registerTask('watchChokidar', 'Run predefined tasks whenever watched files change.', function(target) {
     var self = this;
     var name = self.name || 'watch';
 
@@ -82,7 +82,7 @@ module.exports = function(grunt) {
     // initialize taskrun
     var targets = taskrun.init(name, {target: target});
 
-    targets.forEach(function(target, i) {
+    targets.forEach(function(target) {
       if (typeof target.files === 'string') { target.files = [target.files]; }
 
       // Process into raw patterns
@@ -129,8 +129,8 @@ module.exports = function(grunt) {
         }
 
         // Emit watch events if anyone is listening
-        if (grunt.event.listeners('watch').length > 0) {
-          grunt.event.emit('watch', status, filepath, target.name);
+        if (grunt.event.listeners('watchChokidar').length > 0) {
+          grunt.event.emit('watchChokidar', status, filepath, target.name);
         }
 
         // Group changed files only for display

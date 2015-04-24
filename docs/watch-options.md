@@ -20,7 +20,7 @@ Whether to spawn task runs in a child process. Setting this option to `false` sp
 
 Example:
 ```js
-watch: {
+watchChokidar: {
   scripts: {
     files: ['**/*.js'],
     tasks: ['jshint'],
@@ -41,7 +41,7 @@ As files are modified this watch task will spawn tasks in child processes. The d
 
 Example:
 ```js
-watch: {
+watchChokidar: {
   scripts: {
     files: '**/*.js',
     tasks: ['jshint'],
@@ -60,7 +60,7 @@ How long to wait before emitting events in succession for the same filepath and 
 
 Example:
 ```js
-watch: {
+watchChokidar: {
   scripts: {
     files: '**/*.js',
     tasks: ['jshint'],
@@ -81,11 +81,11 @@ The `interval` is passed to `fs.watchFile`. Since `interval` is only used by `fs
 Type: `String|Array`
 Default: `'all'`
 
-Specify the type watch event that trigger the specified task. This option can be one or many of: `'all'`, `'changed'`, `'added'` and `'deleted'`.
+Specify the type watch event that trigger the specified task. This option can be one or many of: `'all'`, `'add'`, `'change'` and `'unlink'`.
 
 Example:
 ```js
-watch: {
+watchChokidar: {
   scripts: {
     files: '**/*.js',
     tasks: ['generateFileManifest'],
@@ -105,7 +105,7 @@ When `reload` is set to `true`, changes to *any* of the watched files will trigg
 This is especially useful if your `Gruntfile.js` is dependent on other files.
 
 ```js
-watch: {
+watchChokidar: {
   configFiles: {
     files: [ 'Gruntfile.js', 'config/*.js' ],
     options: {
@@ -128,7 +128,7 @@ Type: `Function`
 This is *only a task level option* and cannot be configured per target. By default when the watch has finished running tasks it will display the message `Completed in 1.301s at Thu Jul 18 2013 14:58:21 GMT-0700 (PDT) - Waiting...`. You can override this message by supplying your own function:
 
 ```js
-watch: {
+watchChokidar: {
   options: {
     dateFormat: function(time) {
       grunt.log.writeln('The watch finished in ' + time + 'ms at' + (new Date()).toString());
@@ -160,7 +160,7 @@ See also how to [enable livereload on your HTML](https://github.com/gruntjs/grun
 
 Example:
 ```js
-watch: {
+watchChokidar: {
   css: {
     files: '**/*.sass',
     tasks: ['sass'],
@@ -175,7 +175,7 @@ Passing an object to `livereload` allows listening on a specific port and hostna
 
 Example:
 ```js
-watch: {
+watchChokidar: {
   css: {
     files: '**/*.sass',
     tasks: ['sass'],
