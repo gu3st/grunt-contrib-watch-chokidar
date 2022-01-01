@@ -1,22 +1,22 @@
-# grunt-contrib-watch-chokidar v1.0.0 [![Build Status: Linux](https://travis-ci.org/Andy2003/grunt-contrib-watch-chokidar.svg?branch=master)](https://travis-ci.org/Andy2003/grunt-contrib-watch-chokidar)
+# grunt-contrib-watch-chokidar-v3 v1.0.0 [![Build Status: Linux](https://api.travis-ci.org/gu3st/grunt-contrib-watch-chokidar-v3.svg?branch=master)](https://travis-ci.org/gu3st/grunt-contrib-watch-chokidar-v3)
 
 > Run predefined tasks whenever watched file patterns are added, changed or deleted
 
 
 
 ## Getting Started
-This plugin requires Grunt `>=0.4.0`
+This plugin requires Grunt `>=0.4.0` and nodejs `>=14`
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
 ```shell
-npm install grunt-contrib-watch-chokidar --save-dev
+npm install grunt-contrib-watch-chokidar-v3 --save-dev
 ```
 
 Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
 
 ```js
-grunt.loadNpmTasks('grunt-contrib-watch-chokidar');
+grunt.loadNpmTasks('grunt-contrib-watch-chokidar-v3');
 ```
 
 
@@ -231,8 +231,8 @@ Set `options: { cwd: { files: 'a/path', event: 'a/path' }}` to strip off `a/path
 
 
 #### options.livereloadOnError
-Type: `Boolean`  
-Default: `true`  
+Type: `Boolean`
+Default: `true`
 
 Option to prevent the livereload if the executed tasks encountered an error.  If set to `false`, the livereload will only be triggered if all tasks completed successfully.
 
@@ -438,7 +438,7 @@ grunt.initConfig({
 ```
 
 ## Release History
-
+ * 2021-12-31            v1.0.0            upgrade to chokidar-v3
  * 2015-04-24   v1.0.0   use of chokidar
  * 2014-03-19   v0.6.1   Fix for watch targets named "default"
  * 2014-03-11   v0.6.0   Clear changed files after triggering live reload to ensure they're only triggered once. cwd option now accepts separate settings for files and spawn. Fix to make interrupt work more than once. Enable live reload over HTTPS. Print newline after initial 'Waiting...' Remove deprecated grunt.util libs Add reload option to specify files other than Gruntfile files to reload. Update to gaze@0.5.1 Use fork of tiny-lr (which has quiter operation, support for HTTPS and windows path fixes) Add livereloadOnError, which if set to false will not trigger live reload if there is an error.
