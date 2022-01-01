@@ -1,17 +1,17 @@
 {
-  "name": "grunt-contrib-watch-chokidar",
-  "description": "Run predefined tasks whenever watched file patterns are added, changed or deleted",
+  "name": "grunt-contrib-watch-chokidar-v3",
+  "description": "Run predefined tasks whenever watched file patterns are added, changed or deleted. Uses chokidar v3 for node 14+ compat",
   "version": "1.0.0",
   "author": {
-    "name": "Andreas Berger",
-    "email" : "andreas@berger-ecommerce.com",
-    "url": "http://berger-ecommerce.com/"
+    "name": "Dustin Dawes",
+    "email": "gu3st@dustindawes.com",
+    "url": "https://gu3.st"
   },
-  "repository": "Andy2003/grunt-contrib-watch-chokidar",
+  "repository": "gu3st/grunt-contrib-watch-chokidar",
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/Andy2003/grunt-contrib-watch-chokidar/blob/master/LICENSE-MIT"
+      "url": "https://github.com/gu3st/grunt-contrib-watch-chokidar/blob/master/LICENSE-MIT"
     }
   ],
   "engines": {
@@ -21,10 +21,10 @@
     "test": "grunt test -v"
   },
   "dependencies": {
-    "chokidar": "^1.0.1",
-    "tiny-lr": "^0.1.4",
+    "async": "^0.9.0",
+    "chokidar": "^3.5.2",
     "lodash": "^2.4.1",
-    "async": "^0.9.0"
+    "tiny-lr": "^0.1.4"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
